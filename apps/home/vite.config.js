@@ -1,26 +1,29 @@
 import { defineConfig } from 'vite';
 import federation from '@originjs/vite-plugin-federation';
+import dns from 'dns';
 import react from '@vitejs/plugin-react';
+
+dns.setDefaultResultOrder('verbatim');
 
 export default defineConfig({
   plugins: [
     react(),
     federation({
-      remotes: {
-        app: 'http://localhost:5001/assets/remoteEntry.js', // URL for the `home` micro frontend
-        home: 'http://localhost:5002/assets/remoteEntry.js', // URL for the `home` micro frontend
-        profile: 'http://localhost:5003/assets/remoteEntry.js', // URL for the `home` micro frontend
+      name: 'home',
+      filename: 'remoteEntry.js',
+      exposes: {
+        './MFE': './src/App.jsx', // Expose the main component
       },
       shared: ['react'],
     }),
   ],
   preview: {
     host: 'localhost',
-    port: 4000,
+    port: 5002,
     strictPort: true,
   },
   server: {
-    port: 4000,
+    port: 5002,
   },
   build: {
     target: 'esnext',
